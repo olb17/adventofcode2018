@@ -11,11 +11,18 @@ defmodule AdventOfCode.Day01Test do
     assert result
   end
 
-  @tag :skip
+  @tag :skip2
   test "part2" do
-    input = nil
+    input = """
+    +3
+    +3
+    +4
+    -2
+    -4
+    """
+
     result = part2(input)
 
-    assert result
+    assert result == 10
   end
 end
