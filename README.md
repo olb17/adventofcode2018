@@ -1,5 +1,7 @@
 # Advent of Code Elixir Starter
 
+co-written with https://github.com/dompdv/aoc2018 .
+
 A batteries included starter pack for participating in [Advent of Code](https://www.adventofcode.com) using Elixir!
 
 ## Usage
