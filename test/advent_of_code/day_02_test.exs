@@ -3,7 +3,7 @@ defmodule AdventOfCode.Day02Test do
 
   import AdventOfCode.Day02
 
-  @tag :skipa2
+  @tag :skip
   test "part1" do
     input =
       """
