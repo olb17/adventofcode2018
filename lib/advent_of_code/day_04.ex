@@ -2,6 +2,34 @@ defmodule AdventOfCode.Day04 do
   @regex ~r/\[(\d{4})\-(\d{2})\-(\d{2}) (\d{2}):(\d{2})\] (Guard #(\d+) begins shift|.*)/
 
   def part1(args) do
+    guards_day_min_asleep = build_guard_day_min_sleep(args)
+
+    {max_guard_id, _min} =
+      guards_day_min_asleep
+      |> Enum.reduce(%{}, fn {guard_id, day_min_asleep}, acc ->
+        sum =
+          Enum.reduce(day_min_asleep, 0, fn {_day, min_asleep}, acc ->
+            acc + (min_asleep |> Map.values() |> Enum.sum())
+          end)
+
+        Map.put(acc, guard_id, sum)
+      end)
+      |> Enum.max_by(fn {_, sum} -> sum end)
+
+    {min, _sum} =
+      guards_day_min_asleep
+      |> Map.get(max_guard_id)
+      |> Enum.reduce(%{}, fn {_day, min_asleep}, acc ->
+        Enum.reduce(min_asleep, acc, fn {min, value}, acc ->
+          Map.put(acc, min, Map.get(acc, min, 0) + value)
+        end)
+      end)
+      |> Enum.max_by(fn {_min, sum} -> sum end)
+
+    max_guard_id * min
+  end
+
+  def build_guard_day_min_sleep(args) do
     {_, guards_day_min_asleep} =
       args
       |> String.split("\n", trim: true)
@@ -75,29 +103,7 @@ defmodule AdventOfCode.Day04 do
         end
       )
 
-    {max_guard_id, _min} =
-      guards_day_min_asleep
-      |> Enum.reduce(%{}, fn {guard_id, day_min_asleep}, acc ->
-        sum =
-          Enum.reduce(day_min_asleep, 0, fn {_day, min_asleep}, acc ->
-            acc + (min_asleep |> Map.values() |> Enum.sum())
-          end)
-
-        Map.put(acc, guard_id, sum)
-      end)
-      |> Enum.max_by(fn {_, sum} -> sum end)
-
-    {min, _sum} =
-      guards_day_min_asleep
-      |> Map.get(max_guard_id)
-      |> Enum.reduce(%{}, fn {_day, min_asleep}, acc ->
-        Enum.reduce(min_asleep, acc, fn {min, value}, acc ->
-          Map.put(acc, min, Map.get(acc, min, 0) + value)
-        end)
-      end)
-      |> Enum.max_by(fn {_min, sum} -> sum end)
-
-    max_guard_id * min
+    guards_day_min_asleep
   end
 
   def parse_line(line) do
@@ -129,6 +135,24 @@ defmodule AdventOfCode.Day04 do
         0
       )
 
-  def part2(_args) do
+  def part2(args) do
+    guards_day_min_asleep = build_guard_day_min_sleep(args)
+
+    {guard, {min, _sum}} =
+      guards_day_min_asleep
+      |> Enum.map(fn {guard, day_min_sleep} ->
+        min_sleep =
+          Enum.reduce(day_min_sleep, %{}, fn {_day, min_sleep}, acc ->
+            Enum.reduce(min_sleep, acc, fn {min, value}, acc ->
+              Map.put(acc, min, Map.get(acc, min, 0) + value)
+            end)
+          end)
+          |> Enum.max_by(fn {_min, sum} -> sum end)
+
+        {guard, min_sleep}
+      end)
+      |> Enum.max_by(fn {_guard, {_min, sum}} -> sum end)
+
+    guard * min
   end
 end
