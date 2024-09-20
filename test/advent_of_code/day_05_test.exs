@@ -3,9 +3,11 @@ defmodule AdventOfCode.Day05Test do
 
   import AdventOfCode.Day05
 
-  @tag :skip2
+  @input "dabAcCaCBAcCcaDA"
+
+  @tag :skip
   test "part1" do
-    input = "dabAcCaCBAcCcaDA"
+    input = @input
     result = part1(input)
 
     assert result == 10
@@ -13,9 +15,9 @@ defmodule AdventOfCode.Day05Test do
 
   @tag :skip
   test "part2" do
-    input = nil
+    input = @input
     result = part2(input)
 
-    assert result
+    assert result == 4
   end
 end
