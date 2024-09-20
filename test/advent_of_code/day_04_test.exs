@@ -3,7 +3,7 @@ defmodule AdventOfCode.Day04Test do
 
   import AdventOfCode.Day04
 
-  @tag :skip2
+  @tag :skip
   test "part1" do
     input = """
     [1518-11-01 00:00] Guard #10 begins shift
