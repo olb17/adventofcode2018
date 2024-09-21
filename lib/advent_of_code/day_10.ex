@@ -6,14 +6,11 @@ defmodule AdventOfCode.Day10 do
       args
       |> String.split("\n", trim: true)
       |> Enum.map(fn line ->
-        [_, ys, xs, dys, dxs] = Regex.run(@regex, line)
+        [y, x, dy, dx] =
+          Regex.run(@regex, line, capture: :all_but_first)
+          |> Enum.map(&String.to_integer/1)
 
-        %{
-          x: String.to_integer(xs),
-          y: String.to_integer(ys),
-          dx: String.to_integer(dxs),
-          dy: String.to_integer(dys)
-        }
+        %{x: x, y: y, dx: dx, dy: dy}
       end)
 
     display(points, 0)
