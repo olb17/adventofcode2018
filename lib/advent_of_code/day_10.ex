@@ -6,8 +6,7 @@ defmodule AdventOfCode.Day10 do
       args
       |> String.split("\n", trim: true)
       |> Enum.map(fn line ->
-        [_, ys, xs, dys, dxs] =
-          Regex.run(@regex, line)
+        [_, ys, xs, dys, dxs] = Regex.run(@regex, line)
 
         %{
           x: String.to_integer(xs),
@@ -17,49 +16,42 @@ defmodule AdventOfCode.Day10 do
         }
       end)
 
-    for n <- 1..30000 do
+    display(points, 0)
+  end
+
+  def display(points, n) do
+    night =
       points
-      |> move(n)
-      |> display()
-    end
+      |> Enum.map(fn %{x: x, y: y, dx: dx, dy: dy} ->
+        %{x: x + n * dx, y: y + dy * n, dx: dx, dy: dy}
+      end)
 
-    :ok
-  end
+    min_x = night |> Enum.min_by(& &1.x) |> Map.get(:x)
+    min_y = night |> Enum.min_by(& &1.y) |> Map.get(:y)
+    max_x = night |> Enum.max_by(& &1.x) |> Map.get(:x)
+    max_y = night |> Enum.max_by(& &1.y) |> Map.get(:y)
 
-  def move(points, n) do
-    points
-    |> Enum.map(fn %{x: x, y: y, dx: dx, dy: dy} ->
-      %{x: x + n * dx, y: y + dy * n, dx: dx, dy: dy}
-    end)
-  end
-
-  def display(points) do
-    min_x = points |> Enum.min_by(& &1.x) |> Map.get(:x)
-    min_y = points |> Enum.min_by(& &1.y) |> Map.get(:y)
-    max_x = points |> Enum.max_by(& &1.x) |> Map.get(:x)
-    max_y = points |> Enum.max_by(& &1.y) |> Map.get(:y)
-
+    # Characters stands on 1 line (height of 10 points)
     if max_x - min_x <= 10 do
-      IO.puts("")
-
       for x <- min_x..max_x do
         for y <- min_y..max_y do
-          if x == 0 and y == 0 do
-            "0"
-          else
-            case Enum.find(points, &(&1.x == x and &1.y == y)) do
-              nil -> "."
-              _ -> "#"
-            end
+          case Enum.find(night, &(&1.x == x and &1.y == y)) do
+            nil -> "."
+            _ -> "#"
           end
           |> IO.write()
         end
 
         IO.puts("")
       end
+
+      IO.puts("Number of seconds: #{n}")
+    else
+      display(points, n + 1)
     end
   end
 
-  def part2(_args) do
+  def part2(args) do
+    part1(args)
   end
 end
