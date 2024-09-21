@@ -13,39 +13,43 @@ defmodule AdventOfCode.Day10 do
         %{x: x, y: y, dx: dx, dy: dy}
       end)
 
-    display(points, 0)
+    search(points, 0)
   end
 
-  def display(points, n) do
+  def search(points, n) do
     night =
       points
       |> Enum.map(fn %{x: x, y: y, dx: dx, dy: dy} ->
-        %{x: x + n * dx, y: y + dy * n, dx: dx, dy: dy}
+        {x + n * dx, y + dy * n}
       end)
+      |> MapSet.new()
 
-    min_x = night |> Enum.min_by(& &1.x) |> Map.get(:x)
-    min_y = night |> Enum.min_by(& &1.y) |> Map.get(:y)
-    max_x = night |> Enum.max_by(& &1.x) |> Map.get(:x)
-    max_y = night |> Enum.max_by(& &1.y) |> Map.get(:y)
+    {min_x, max_x} = night |> Enum.map(&elem(&1, 0)) |> Enum.min_max()
 
     # Characters stands on 1 line (height of 10 points)
     if max_x - min_x <= 10 do
-      for x <- min_x..max_x do
-        for y <- min_y..max_y do
-          case Enum.find(night, &(&1.x == x and &1.y == y)) do
-            nil -> "."
-            _ -> "#"
-          end
-          |> IO.write()
-        end
+      display(night, min_x, max_x, n)
+    else
+      search(points, n + 1)
+    end
+  end
 
-        IO.puts("")
+  def display(night, min_x, max_x, n) do
+    {min_y, max_y} = night |> Enum.map(&elem(&1, 1)) |> Enum.min_max()
+
+    for x <- min_x..max_x do
+      for y <- min_y..max_y do
+        if(MapSet.member?(night, {x, y}),
+          do: "#",
+          else: " "
+        )
+        |> IO.write()
       end
 
-      IO.puts("Number of seconds: #{n}")
-    else
-      display(points, n + 1)
+      IO.puts("")
     end
+
+    IO.puts("Number of seconds: #{n}")
   end
 
   def part2(args) do
