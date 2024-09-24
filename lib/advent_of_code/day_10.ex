@@ -39,10 +39,7 @@ defmodule AdventOfCode.Day10 do
 
     for x <- min_x..max_x do
       for y <- min_y..max_y do
-        if(MapSet.member?(night, {x, y}),
-          do: "#",
-          else: " "
-        )
+        if(MapSet.member?(night, {x, y}), do: "#", else: " ")
         |> IO.write()
       end
 
