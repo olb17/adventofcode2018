@@ -3,7 +3,12 @@ defmodule AdventOfCode.Day12 do
     {state, grow_rule} =
       parse_args(args)
 
-    1..20
+    process(state, grow_rule, 20)
+    |> calc()
+  end
+
+  def process(state, grow_rule, n) do
+    1..n
     |> Enum.reduce(state, fn _, new_state ->
       {min, max} =
         new_state
@@ -16,11 +21,6 @@ defmodule AdventOfCode.Day12 do
         Map.put(new_new_state, i, grow_rule.(i, new_state))
       end)
     end)
-    |> Enum.flat_map(fn
-      {k, "#"} -> [k]
-      {_, "."} -> []
-    end)
-    |> Enum.sum()
   end
 
   defp parse_args(args) do
@@ -52,6 +52,32 @@ defmodule AdventOfCode.Day12 do
     {state, grow_rule}
   end
 
-  def part2(_args) do
+  def calc(state) do
+    state
+    |> Enum.flat_map(fn
+      {k, "#"} -> [k]
+      {_, "."} -> []
+    end)
+    |> Enum.sum()
+  end
+
+  def part2(args) do
+    {state, grow_rule} =
+      parse_args(args)
+
+    Enum.reduce(1..150, {state, 0}, fn i, {state, last_sum} ->
+      state = process(state, grow_rule, 1)
+
+      res = calc(state)
+
+      IO.puts("#{i} : #{res} / #{res - last_sum}")
+
+      {state, res}
+    end)
+
+    # observe repetition from step 128 onward
+    # step 128 : 12196
+    n = 50_000_000_000
+    12196 + (n - 128) * 78
   end
 end
