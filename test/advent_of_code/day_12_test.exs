@@ -3,12 +3,31 @@ defmodule AdventOfCode.Day12Test do
 
   import AdventOfCode.Day12
 
-  @tag :skip
+  @input """
+  initial state: #..#.#..##......###...###
+
+  ...## => #
+  ..#.. => #
+  .#... => #
+  .#.#. => #
+  .#.## => #
+  .##.. => #
+  .#### => #
+  #.#.# => #
+  #.### => #
+  ##.#. => #
+  ##.## => #
+  ###.. => #
+  ###.# => #
+  ####. => #
+  """
+
+  @tag :skip2
   test "part1" do
-    input = nil
+    input = @input
     result = part1(input)
 
-    assert result
+    assert result == 325
   end
 
   @tag :skip
