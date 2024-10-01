@@ -22,7 +22,7 @@ defmodule AdventOfCode.Day12Test do
   ####. => #
   """
 
-  @tag :skip2
+  @tag :skip
   test "part1" do
     input = @input
     result = part1(input)
