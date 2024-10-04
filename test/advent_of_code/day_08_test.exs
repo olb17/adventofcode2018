@@ -6,7 +6,7 @@ defmodule AdventOfCode.Day08Test do
   @input """
   2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2
   """
-  @tag :skip2
+  @tag :skip
   test "part1" do
     input = @input
     result = part1(input)
@@ -16,9 +16,9 @@ defmodule AdventOfCode.Day08Test do
 
   @tag :skip
   test "part2" do
-    input = nil
+    input = @input
     result = part2(input)
 
-    assert result
+    assert result == 66
   end
 end
