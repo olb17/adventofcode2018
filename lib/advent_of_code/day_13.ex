@@ -1,18 +1,20 @@
 defmodule AdventOfCode.Day13 do
   def part1(args) do
+    # map is a dict of {x,y} -> track char ("|", "-", "\\", "/" , "+")
+    # carts is a list of %{pos: {x, y}, dir: {dx, dy}, next_move: next_move} where next_move is in :eft, :straight or :right
     {map, carts} =
       parse_config(args)
 
-    {x, y} = play_carts(map, carts)
+    {x, y} = find_crash(map, carts)
     "#{x},#{y}"
   end
 
-  def play_carts(map, carts) do
+  def find_crash(map, carts) do
     carts
     |> Enum.sort_by(fn cart -> {elem(cart.pos, 1), elem(cart.pos, 0)} end)
     |> move_carts([], map)
     |> case do
-      {:all_moved, moved_carts} -> play_carts(map, moved_carts)
+      {:all_moved, moved_carts} -> find_crash(map, moved_carts)
       {:collision, target} -> target
     end
   end
@@ -28,6 +30,7 @@ defmodule AdventOfCode.Day13 do
     |> Enum.map(& &1.pos)
     |> Enum.find(&(&1 == target))
     |> case do
+      # no collision
       nil ->
         {dir, next_move} =
           case map[target] do
@@ -62,16 +65,17 @@ defmodule AdventOfCode.Day13 do
     end
   end
 
-  def play_carts_crash(map, carts) do
+  def find_survivor(map, carts) do
     carts
     |> Enum.sort_by(fn cart -> {elem(cart.pos, 1), elem(cart.pos, 0)} end)
     |> move_carts_crash([], map)
     |> case do
       {:all_moved, [survivor]} ->
+        # Survivor found
         survivor.pos
 
       {:all_moved, moved_carts} ->
-        play_carts_crash(map, moved_carts)
+        find_survivor(map, moved_carts)
     end
   end
 
@@ -174,7 +178,7 @@ defmodule AdventOfCode.Day13 do
     {map, carts} =
       parse_config(args)
 
-    {x, y} = play_carts_crash(map, carts)
+    {x, y} = find_survivor(map, carts)
     "#{x},#{y}"
   end
 end
